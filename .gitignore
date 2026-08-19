@@ -5,3 +5,13 @@
 .Rproj.user/
 .Rhistory
 .RData
+# Ignore all files and folders in the root
+/*
+
+# Allow tracking only code and data folders
+!/code/
+!/data/
+
+# Exclude large binary/model files inside data that exceed GitHub's 100 MB limit
+*.tif
+*.rds

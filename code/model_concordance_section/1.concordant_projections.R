@@ -403,15 +403,8 @@ p_rank_diff <- ggplot() +
 final_figure <- (p_gam | p_maxent) / (p_agreement | p_rank_diff) +
   plot_annotation(
     title = "Figure 6. GAM–MaxEnt spatial concordance across Pakistan",
-    subtitle = sprintf(
-      "Pakistan-calibrated GAM versus India-calibrated MaxEnt; n = %s overlapping pixels; Spearman's rho = %.3f; Pearson's r = %.3f",
-      format(nrow(comparison_df), big.mark = ","),
-      unname(spearman_res$estimate),
-      unname(pearson_res$estimate)
-    ),
     theme = theme(
-      plot.title    = element_text(size = 14, face = "bold", color = "grey15"),
-      plot.subtitle = element_text(size = 9.5, color = "grey35")
+      plot.title = element_text(size = 14, face = "bold", color = "grey15")
     )
   )
 
