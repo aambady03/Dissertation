@@ -1,0 +1,91 @@
+% Template for MEng/BEng/MSc final reports
+% EEE Department - Imperial College London
+% Compile with LuaLaTeX + Biber
+
+\documentclass[10pt]{ic_eee_thesis}
+
+\usepackage[style=ieee,backend=biber,hyperref=auto]{biblatex}
+\addbibresource{references.bib}
+
+%%%%%%%%%%%%%%%% SETUP %%%%%%%%%%%%%%%%
+% Degree
+%\degree{MEng}
+%\degree{BEng}
+\degree{MSc}
+
+\title{Predicting the Expansion of \textit{Parthenium hysterophorus} Under Climate Change Scenarios: Environmental and spatial drivers of \textit{Parthenium} invasion across agroecosystems in South Asia}
+\subtitle{}
+\author{Anaga Ambady}
+\cid{00000000}
+\supervisor{Anaga Ambady}
+\submityear{2026}
+
+% Course
+%\course{Analogue and Digital Integrated Circuit Design}
+%\course{Applied Machine Learning}
+%\course{Communications and Signal Processing}
+\course{Control and Optimisation}
+%\course{Future Power Networks}
+
+% Front matter options
+\setboolean{list_of_figures}{true}
+\setboolean{list_of_tables}{true}
+\setboolean{acknowledgement}{true}
+\setboolean{acronyms}{false}
+\setboolean{edge_labels}{true}
+\setboolean{double_spacing}{true}
+
+% MSc ignores Part B settings, but template may still define them harmlessly
+\setboolean{final_thesis}{true}
+\secondmarker{}
+
+%%%%%%%%%%%%%%%% ADDITIONAL PACKAGES %%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{pdflscape}
+\usepackage{csquotes}
+\usepackage{setspace}
+
+%%%%%%%%%%%%%%%% ADDITIONAL COMMANDS %%%%%%%%%%%%%%%%
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\vect}{vec}
+
+\begin{document}
+
+\preamble
+
+% Front matter files to edit inside chapters/
+% chapters/Abstract.tex
+% chapters/OrigSta_Copyright.tex
+% chapters/Acknowledgement.tex
+
+% Additional front matter required by programme guidance
+\input{chapters/Declaration.tex}
+
+% Main dissertation chapters
+\input{chapters/Introduction.tex}
+\input{chapters/Methods.tex}
+\input{chapters/Results.tex}
+\input{chapters/Discussion.tex}
+
+% Data and code statement before bibliography, per guidance
+\input{chapters/DataCodeAvailability.tex}
+
+% Supplementary material / appendices
+\appendix
+\input{chapters/AppendixA.tex}
+
+\cleardoublepage
+\RemoveLabels
+\thesisspacing
+\printbibliography[title={Bibliography},heading=bibintoc]
+
+\end{document}

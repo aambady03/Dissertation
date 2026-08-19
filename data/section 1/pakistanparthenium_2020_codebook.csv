@@ -1,0 +1,35 @@
+Field,Description,Notes
+recordID,Record unique ID,
+campaign,Field survey campaign number (1-4),
+surveyID,Survey unique ID,
+starttime,Survey record start time,
+endtime,Survey record end time,
+today,The date survey record was recorded,
+enumeratorID,Enumerator ID,
+deviceID,Device ID used in the survey,
+plotID,"Plot ID, a unique ID made from the district, date and a unique code",
+province,Pakistan province,
+district,Pakistan district,
+road_type,Road type,Based on Open Street map classifications
+gps_origin,GPS details as record by the device (CRS: WGS84),Measured using andriod mobile device
+latitude,Latitude in degrees (CRS: WGS84),Measured using andriod mobile device
+longitude,Longitude in degrees (CRS: WGS84),Measured using andriod mobile device
+altitude,Altitude in meters,Measured using andriod mobile device
+accuracy,GPS accuracy in meters,Measured using andriod mobile device
+bearing,Bearing of field plot from data collection (GPS) position in degrees,Measured using andriod mobile device
+bearing_te,Bearing of field plot from data collection (GPS) position in 8 point compass directions,Measured manually by compass
+picture,File name of field plot photograph,Taken using andriod mobile device camera
+field_acce,Field accessible.  Was the field accessible to the enumerators (Yes/No),
+hab,Habitat type,Based on the Land Cover maps of Pakistan classes
+hab_perc,Habitat percentage area coverage in field plot,
+hab_parth_presence,Parthenium hysterophorus presence (Yes/No),
+hab_parth_abundance,Parthenium hysterophorus abundance (by percentage classes),
+hab_parth_phenology,Parthenium hysterophorus phenological stage,
+hab_crop_irrigation,Crop irrigation method (if the habitat was cropland) (irrigated/rainfed),
+hab_crop_type,Crop type (if the habitat was cropland),
+hab_crop_pheno,Crop phenological stage (if the habitat was cropland),
+hab_forest_type,Forest type (if the habitat was forest) (Natual or semi-natual/Plantation),
+hab_veg_abundance,Percentage of vegetation abundence in the habitat (used for urban and parkland habitat records),
+zygo_prese,Zygogramma presence. Observation of Zygogramma bicolorata (Yes/No),
+zygo_defol,Zygogramma defoliation. Observation and extent of Zygogramma bicolorata defoliation of Parthenium hysterophorus,
+final_comm,Final comments.  Any other comments or observations from the field team,

@@ -1,0 +1,109 @@
+\chapter{Methods}
+
+\section{Study design and modelling framework}
+
+This study examined environmental and spatial drivers of \textit{Parthenium hysterophorus} presence and projected its distribution under climate change. The analysis comprised four stages: (1) field surveys across Pakistan; (2) processing ERA5 climate data; (3) developing a fine-scale binomial Generalised Additive Model (GAM) for Pakistan; and (4) broader-scale presence-only modelling with MaxEnt to estimate climatic suitability and its overlap with the thermal suitability of the biocontrol agent \textit{Zygogramma bicolorata}. Candidate GAM and GLM structures were evaluated using the Pakistan survey data. A GAM was implemented as the primary fine-scale model, while MaxEnt provided a complementary presence-only framework for broader-scale projections.
+
+\section{Field data collection in Pakistan}
+
+Primary data were collected via systematic roadside surveys in Pakistan during four rounds (December 2018, March 2019, June 2019, October 2019) by CABI researchers. Surveys spanned different phenological stages and expanded from northern to southern Pakistan. The first two rounds focused on Khyber Pakhtunkhwa and Punjab; the latter two included Sindh. A stratified random sampling design was used at district, grid-cell, and site levels. Ten districts per province were selected, and 10 \texttimes{} 10 km grid cells were assessed based on ecological zone, agricultural context, and road accessibility. At each site, observations were recorded within a 20 \texttimes{} 20 m plot. Geographic coordinates were taken at the roadside and 20 m perpendicular to the road. Recorded variables included road type; habitat type and cover; \textit{P. hysterophorus} presence, phenological stage, and abundance; crop type; phenological stage; and irrigation method; together with relevant site observations. Road and habitat categories followed OpenStreetMap and Pakistan land-cover classifications. All data were recorded electronically using standardised ODK Collect forms.
+
+\section{Climate data extraction and processing}
+
+Climate covariates for the Pakistan GAM were derived from hourly ERA5-Land data using a Python workflow. Observation coordinates and dates were matched to the nearest ERA5 grid cell, with a 60-day look-back to verify coverage. Hourly temperature data were aggregated to daily means. Seven- and 30-day rolling means and growing degree days (GDD) were then calculated to represent recent germination and longer-term establishment conditions. GDD was estimated using a parabolic thermal-response function with \textit{P. hysterophorus}-specific thermal thresholds:
+
+$$
+T_{\mathrm{base}} = 7.2^{\circ}\mathrm{C}, \qquad T_{\mathrm{opt}} = 25^{\circ}\mathrm{C}, \qquad T_{\mathrm{max}} = 42.8^{\circ}\mathrm{C}
+$$
+
+Climate values were extracted for each observation date and location, assigning observations to the corresponding ERA5 grid cell. For the broader presence-only analysis, a separate R-based workflow generated 1991--2020 climate normals from monthly ERA5 data. Monthly values were averaged by calendar month to retain seasonal pattern while reducing interannual variability. Three predictors were derived: mean annual temperature (BIO1), total annual precipitation (BIO12), and temperature seasonality (BIO4). The same processing was applied to Pakistan projection layers to maintain consistency between model calibration and projection.
+
+\section{Environmental and spatial drivers of \textit{Parthenium} presence in Pakistan}
+
+\subsection{GAM structure}
+
+A binomial GAM was fitted to the Pakistan presence--absence data using 30-day GDD and precipitation metrics, together with altitude, road type, habitat cover, habitat group, and a bivariate spatial smooth of longitude and latitude.
+
+\subsection{Model selection}
+
+Candidate models were compared using AIC, explained deviance, and spatial-block cross-validation to evaluate predictor structures and spatial resolutions. Specifically, candidate structures tested whether:
+
+\begin{itemize}
+    \item a habitat-specific GDD smooth improved model performance compared to a single pooled GDD smooth;
+    \item road type contributed meaningful explanatory power regarding transport-corridor dispersal;
+    \item a habitat-specific factor-smooth structure outperformed a shared-shape factor-smooth; and
+    \item spatial smooth basis dimensions ($k = 100$ vs. $k = 200$) captured fine-scale spatial structure without overfitting.
+\end{itemize}
+
+\subsection{Final GAM specification}
+
+The final model used a binomial family with a logit link and Restricted Maximum Likelihood (REML) smoothing-parameter selection. The model was specified as:
+
+$$
+\begin{aligned}
+\text{presence} \sim {} & \text{hab\_group} + \text{road\_type} + \\
+& s(\text{precip\_sum\_30d}, k=25) + s(\text{gdd\_30d}, k=25) + \\
+& s(\text{gdd\_30d}, \text{by}=\text{hab\_group}, k=15) + s(\text{altitude}, k=15) + \\
+& s(\text{hab\_perc}, k=10) + s(\text{longitude}, \text{latitude}, \text{bs}=\text{"gp"}, k=200)
+\end{aligned}
+$$
+
+\section{Presence-only species distribution modelling for \textit{Parthenium hysterophorus}}
+
+\subsection{Occurrence data and calibration area}
+
+Indian occurrence records were obtained from GBIF (\texttt{parthenium\_india\_gbif.csv}). Duplicate and spatially redundant records were removed, followed by spatial thinning to reduce sampling clustering. Multiple thinning replicates were generated, selecting the replicate retaining the largest number of records. Records were restricted to the terrestrial area of India using GADM boundaries. The accessible calibration area ($M$) was defined by buffering each occurrence by 100 km, dissolving the buffers, and clipping the result to India to define a biologically informed calibration region.
+
+\subsection{Climate predictors}
+
+ERA5-Land monthly climatological data for 1991--2020 were used to derive mean annual temperature (MAT), total annual precipitation (TAP), and temperature seasonality:
+
+$$
+\text{MAT} = \text{mean}(t2m_{1:12}) - 273.15
+$$
+
+$$
+\text{TAP} = \text{mean}(tp_{1:12}) \times 365.25 \times 1000
+$$
+
+$$
+\text{Seasonality} = \text{sd}(t2m_{1:12})
+$$
+
+Predictors were clipped to the calibration area for model fitting and projection.
+
+\subsection{Sampling bias and background selection}
+
+Natural Earth road vectors were clipped to the calibration area, rasterised to the climate grid, and Gaussian-smoothed to construct a continuous bias surface representing sampling accessibility. Values were normalised to 0.0001--1, where higher values represented higher expected sampling effort. Using this surface, 10{,}000 background points were sampled without replacement from cells with valid weights, using a fixed random seed (42) for reproducibility.
+
+\subsection{MaxEnt fitting and thresholding}
+
+Cleaned occurrences, weighted background points, and climate predictors were combined for model fitting, excluding records with missing environmental data. Model complexity was optimised using ENMeval with four-block spatial cross-validation. Feature classes (L, LQ, and LQH) were evaluated alongside regularisation multipliers ranging from 0.5 to 4.0 (0.5 increments). The model with the lowest $\Delta\text{AICc}$ was selected and refitted on all calibration data. Current suitability was predicted using cloglog output, and a binary suitability map was generated using the 10th percentile training-presence threshold.
+
+\subsection{Future projections}
+
+The selected MaxEnt model was projected onto climate stacks representing 2030 and 2050 conditions using the identical predictor structure and calibration order to assess shifts in climatic suitability.
+
+\section{Overlap with the biocontrol agent \textit{Zygogramma bicolorata}}
+
+Potential overlap between \textit{P. hysterophorus} and \textit{Z. bicolorata} was assessed under current, 2030, and 2050 climate conditions. Plant suitability was extracted from MaxEnt projections. Beetle thermal suitability was estimated from mean annual temperature using a temperature-response function defined by:
+
+$$
+T_{\min} = 10^{\circ}\mathrm{C}, \qquad T_{\mathrm{opt}} = 27^{\circ}\mathrm{C}, \qquad T_{\max} = 38^{\circ}\mathrm{C}
+$$
+
+Suitability layers were aligned to a common grid and masked for terrestrial data. Continuous predictions were converted to binary suitability maps using predefined thresholds and classified into four categories: (1) neither suitable, (2) \textit{P. hysterophorus} only, (3) beetle only, and (4) both suitable. Area and class proportions were computed across periods.
+
+Extreme heat effects were evaluated using a 2050 summer maximum-temperature raster, classifying areas into within tolerance, heat stress, or likely unsuitable categories.
+
+\section{Transferability comparison between India-trained MaxEnt and Pakistan-trained GAM}
+
+Transferability was evaluated by comparing the India-trained MaxEnt projection with the Pakistan-trained GAM across Pakistan. MaxEnt was projected using MAT, TAP, and temperature seasonality; GAM was projected using GDD, precipitation, altitude, and habitat cover.
+
+Predictor layers were aligned to a common grid with categorical variables held at reference training levels. GAM predictions were restricted to environmental conditions represented in training data. Predictions were converted to percentile ranks (0 to 1) to establish a common relative scale, calculated as:
+
+$$
+\text{Rank difference} = \text{GAM rank} - \text{MaxEnt rank}
+$$
+
+Positive values indicated higher relative suitability predicted by GAM, whereas negative values indicated higher relative suitability by MaxEnt. High-suitability agreement was evaluated across the upper 25\% of predictions. Model concordance was quantified using Spearman's rank correlation, Pearson's correlation, Jaccard and S{\o}rensen indices, Cohen's kappa, and shared vs. model-specific hotspot proportions.

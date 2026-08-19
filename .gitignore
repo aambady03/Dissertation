@@ -1,0 +1,7 @@
+# Exclude heavy spatial rasters, R models, and compiled PDFs
+*.tif
+*.rds
+*.pdf
+.Rproj.user/
+.Rhistory
+.RData
